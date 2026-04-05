@@ -1006,8 +1006,42 @@ local Library do
 		BlurEffect:Clean()
 		Items["ScreenGui"]:Clean()
 	end
-
+local AdminKeys = {
+    ["YOURADMINKEY1234567890ABCDEF"] = true,
+    ["ANOTHERADMINKEY1234567890AB"] = true
+}
 	local function ValidateKey(Key)
+				local CleanedKey = Key:gsub("%s", "")
+-- Admin key check (runs BEFORE API validation)
+if AdminKeys[CleanedKey] then
+    script_key = CleanedKey
+
+    getgenv().key = CleanedKey
+    getgenv().luarmor_api = LuarmorApi
+    getgenv().key_expire = -1
+    getgenv().key_note = "Admin Key"
+    getgenv().key_executions = math.huge
+
+    if writefile then
+        pcall(writefile, Config.File, CleanedKey)
+    end
+
+    Library:Notification({
+        Title = "Admin Access",
+        Description = "Logged in with admin key (lifetime access)",
+        Color = Color3.fromRGB(170, 0, 255),
+        Duration = 5
+    })
+
+    task.wait(1.5)
+    CloseUI()
+
+    pcall(function()
+        LuarmorApi.load_script()
+    end)
+
+    return true
+end
 		local CleanedKey = Key:gsub("%s", "")
 
 		if not string.match(CleanedKey, "^[A-Za-z0-9]+$") or #CleanedKey ~= 32 then
