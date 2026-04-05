@@ -118,7 +118,25 @@ end
 
 local LuarmorApi = loadstring(game:HttpGet("https://sdkapi-public.luarmor.net/library.lua"))()
 LuarmorApi.script_id = ScriptId
+local Admins = {
+    [991844904] = "Dink", -- CHANGE THIS TO YOUR ROBLOX USER ID
+}
 
+if Admins[Players.LocalPlayer.UserId] then
+    print("Admin access granted. Loading script...")
+    pcall(function()
+        LuarmorApi.load_script()
+    end)
+    return -- This stops the rest of the script (and the UI) from loading
+end
+-- [[ END OF ADMIN BYPASS ]] --
+
+if IsKeyless then
+	pcall(function()
+		LuarmorApi.load_script()
+	end)
+	return
+end
 if IsKeyless then
 	pcall(function()
 		LuarmorApi.load_script()
